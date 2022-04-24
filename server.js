@@ -1,6 +1,8 @@
-const express = require( 'express' )
-const ip = require("ip");
-const satelize = require('satelize');
+import express from "express";
+import ip from "ip";
+import getIp from "./getIp.js";
+import geoip from 'fast-geoip';
+import clm from 'country-locale-map';
 
 const app = express()
 const port = 6060
@@ -23,6 +25,18 @@ const getTimezone = (time) => {
     return `GMT ${prefix} ${String(hours_abs).padStart(2, '0').padEnd(4, '0')}`
 };
 
+app.get("/", async (req, res) => {
+		const ipAddress = await getIp(req.ip);
+        const { timezone, country: country_code } = await geoip.lookup(ipAddress);
+		const locale = clm.getCountryByAlpha2(country_code).default_locale.replaceAll('_', '-');
+        res.type('text/plain');
+        res.send(`
+            Ip address: ${ipAddress}
+            Strefa czasowa: ${timezone}
+            Data i godzina: ${new Date().toLocaleString(locale, { timeZone: timezone })}
+        `)
+	}
+);
 app.get('/',(req, res) => {
     res.type( 'text/plain' )
     res.send(`Ip address: ${ipAddress}, Strefa czasowa po ip: ${getTimezone(date_ob)}`)
