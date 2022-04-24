@@ -15,12 +15,17 @@ let seconds = date_ob.getSeconds();
 
 let ipAddress = ip.address();
 
+const getTimezone = (time) => {
+    const hours = time.getTimezoneOffset() / 60;
+    const prefix = hours >= 0 ? '+' : '-';
+    const hours_abs = Math.abs(hours);
+    
+    return `GMT ${prefix} ${String(hours_abs).padStart(2, '0').padEnd(4, '0')}`
+};
+
 app.get('/',(req, res) => {
     res.type( 'text/plain' )
-    res.send(`Ip address: ${ipAddress}`)
-    res.send(`Strefa czasowa po ip: ${satelize.satelize({ ip: ipAddress }, function(err, payload) {
-        res.send(payload);
-    })}`)
+    res.send(`Ip address: ${ipAddress}, Strefa czasowa po ip: ${getTimezone(date_ob)}`)
 })
 app.use((req, res) => {
     res.type( 'text/plain' )
