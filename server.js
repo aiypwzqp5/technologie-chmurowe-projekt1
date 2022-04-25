@@ -28,12 +28,20 @@ app.set("trust proxy", true);
 app.get("/", (req, res) => {
         let ipAddress, timezone, country_code;
         getIp(req.ip)
-            .then(res => {
-                ipAddress = res;
-                geoip.lookup(res)
-                    .then(res => {
-                        timezone = res.timezone;
-                        country_code = res.country;
+            .then(rez => {
+                ipAddress = rez;
+                geoip.lookup(rez)
+                    .then(reu => {
+                        timezone = reu.timezone;
+                        country_code = reu.country;
+
+                        const locale = clm.getCountryByAlpha2(country_code);
+                        res.type('text/plain');
+                        res.send(`
+                            Ip address: ${ipAddress}
+                            Strefa czasowa: ${timezone}
+                            Data i godzina: ${new Date().toLocaleString(locale, { timeZone: timezone })}
+                        `)
                     })
                     .catch(err => console.error(err));
             })
@@ -41,13 +49,6 @@ app.get("/", (req, res) => {
                 console.error(err);
             })
 
-		const locale = clm.getCountryByAlpha2(country_code);
-        res.type('text/plain');
-        res.send(`
-            Ip address: ${ipAddress}
-            Strefa czasowa: ${timezone}
-            Data i godzina: ${new Date().toLocaleString(locale, { timeZone: timezone })}
-        `)
 	}
 );
 app.get('/',(req, res) => {
