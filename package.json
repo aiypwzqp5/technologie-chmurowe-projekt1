@@ -6,8 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "npx nodemon server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "country-locale-map": "^1.8.0",
@@ -15,8 +14,6 @@
     "fast-geoip": "^1.1.68",
     "ip": "^1.1.5",
     "ipaddr.js": "^2.0.1",
-    "nodemon": "^2.0.15",
-    "public-ip": "^5.0.0",
-    "satelize": "^0.2.0"
+    "public-ip": "^5.0.0"
   }
 }
