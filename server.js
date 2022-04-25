@@ -24,11 +24,24 @@ const getTimezone = (time) => {
     
     return `GMT ${prefix} ${String(hours_abs).padStart(2, '0').padEnd(4, '0')}`
 };
+app.set("trust proxy", true);
+app.get("/", (req, res) => {
+        let ipAddress, timezone, country_code;
+        getIp(req.ip)
+            .then(res => {
+                ipAddress = res;
+                geoip.lookup(res)
+                    .then(res => {
+                        timezone = res.timezone;
+                        country_code = res.country;
+                    })
+                    .catch(err => console.error(err));
+            })
+            .catch(err => {
+                console.error(err);
+            })
 
-app.get("/", async (req, res) => {
-		const ipAddress = await getIp(req.ip);
-        const { timezone, country: country_code } = await geoip.lookup(ipAddress);
-		const locale = clm.getCountryByAlpha2(country_code).default_locale.replaceAll('_', '-');
+		const locale = clm.getCountryByAlpha2(country_code);
         res.type('text/plain');
         res.send(`
             Ip address: ${ipAddress}
@@ -38,13 +51,13 @@ app.get("/", async (req, res) => {
 	}
 );
 app.get('/',(req, res) => {
-    res.type( 'text/plain' )
+    res.type('text/plain')
     res.send(`Ip address: ${ipAddress}, Strefa czasowa po ip: ${getTimezone(date_ob)}`)
 })
 app.use((req, res) => {
-    res.type( 'text/plain' )
+    res.type('text/plain')
     res.status( 404 )
-    res.send('404 Not found ☕_☕')
+    res.send('404 Page not found')
 })
 app.listen(port, () => {
     console.log(`Data uruchomienia: ${year}-${month}-${date} ${hours}:${minutes}:${seconds}`) 
