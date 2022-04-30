@@ -15,8 +15,6 @@ let hours = date_ob.getHours();
 let minutes = date_ob.getMinutes();
 let seconds = date_ob.getSeconds();
 
-let ipAddress = ip.address();
-
 const getTimezone = (time) => {
     const hours = time.getTimezoneOffset() / 60;
     const prefix = hours >= 0 ? '+' : '-';
